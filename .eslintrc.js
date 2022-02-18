@@ -42,6 +42,18 @@ module.exports = {
     'import/order': 'off',
     'import/prefer-default-export': 'off',
     'import/no-unresolved': 'off',
+    'no-underscore-dangle': 'off',
+    'no-unused-expressions': 0,
+    'no-unused-vars': 0,
+    // Fixes Redux Toolkit
+    'no-param-reassign': [
+      'error',
+      {
+        props: true,
+        ignorePropertyModificationsFor: ['state']
+      }
+    ],
+    'object-curly-spacing': ['warn', 'always'],
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.tsx'] }]
   }
 };
