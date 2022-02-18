@@ -7,13 +7,13 @@ module.exports = {
       options: {
         source: 'tsconfig',
         /* tsConfigPath should point to the file where "paths" are specified */
-        tsConfigPath: './tsconfig.paths.json',
-      },
-    },
+        tsConfigPath: './tsconfig.paths.json'
+      }
+    }
   ],
   webpack: {
     alias: {
-      '@mui/styled-engine': '@mui/styled-engine-sc',
-    },
-  },
+      '@mui/styled-engine': '@mui/styled-engine-sc'
+    }
+  }
 };
