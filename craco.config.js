@@ -1,3 +1,4 @@
+const path = require('path');
 const CracoAlias = require('craco-alias');
 
 module.exports = {
@@ -6,14 +7,15 @@ module.exports = {
       plugin: CracoAlias,
       options: {
         source: 'tsconfig',
-        /* tsConfigPath should point to the file where "paths" are specified */
+        baseUrl: '.',
         tsConfigPath: './tsconfig.paths.json'
       }
     }
   ],
   webpack: {
     alias: {
-      '@mui/styled-engine': '@mui/styled-engine-sc'
+      '@mui/styled-engine': '@mui/styled-engine-sc',
+      '#store': path.resolve(__dirname, 'src/store')
     }
   }
 };
