@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import theme from './slices/themeSlice';
+import game from './slices/gameSlice';
 
 const store = configureStore({
   reducer: {
-    theme
-  }
+    theme,
+    game,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
