@@ -1,18 +1,12 @@
 import { PaletteMode } from '@mui/material';
 import { amber, deepOrange, grey } from '@mui/material/colors';
 
-export const getDesignTokens = (darkMode: boolean) => ({
+export const getDesignPalette = (darkMode: boolean) => ({
   palette: {
     mode: darkMode ? ('dark' as PaletteMode) : ('light' as PaletteMode),
     ...(darkMode
       ? {
           // palette values for dark mode
-          primary: deepOrange,
-          divider: deepOrange[700],
-          background: {
-            default: deepOrange[900],
-            paper: deepOrange[900]
-          },
           text: {
             primary: '#fff',
             secondary: grey[500]
