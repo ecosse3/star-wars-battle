@@ -1,13 +1,16 @@
 import React, { useMemo } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Box, Container, createTheme, ThemeProvider, Typography } from '@mui/material';
+import { Container, createTheme, ThemeProvider } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectDarkMode } from './store/slices/themeSlice';
 import { getDesignPalette } from './utils/theme';
 import TopBar from '#components/TopBar';
+import ResourceSelection from '#containers/ResourceSelection';
+import { selectResource } from '#store/slices/gameSlice';
 
 const App = () => {
   const darkMode = useSelector(selectDarkMode);
+  const resource = useSelector(selectResource);
 
   // Update the theme only if the darkMode changes
   const theme = useMemo(() => createTheme(getDesignPalette(darkMode)), [darkMode]);
@@ -17,11 +20,7 @@ const App = () => {
       <CssBaseline />
       <Container maxWidth="md">
         <TopBar />
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+        {resource === null ? <ResourceSelection /> : null}
       </Container>
     </ThemeProvider>
   );
