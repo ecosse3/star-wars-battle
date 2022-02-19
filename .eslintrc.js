@@ -27,7 +27,9 @@ module.exports = {
   plugins: ['react', 'react-hooks', 'prettier', '@typescript-eslint'],
   rules: {
     'prettier/prettier': 'error',
-    '@typescript-eslint/no-unused-vars': ['warn'],
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error',
+    '@typescript-eslint/no-unused-vars': 'warn',
     'comma-dangle': ['error', 'never'],
     'import/default': 'off',
     'import/extensions': 0,
