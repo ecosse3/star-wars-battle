@@ -15,6 +15,7 @@ module.exports = {
   webpack: {
     alias: {
       '@mui/styled-engine': '@mui/styled-engine-sc',
+      '#assets/*': path.resolve(__dirname, 'src/assets/*'),
       '#components/*': path.resolve(__dirname, 'src/components/*'),
       '#interfaces': path.resolve(__dirname, 'src/interfaces'),
       '#store': path.resolve(__dirname, 'src/store'),
