@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useMemo } from 'react';
+import CssBaseline from '@mui/material/CssBaseline';
+import { Box, Container, createTheme, ThemeProvider, Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { selectDarkMode } from './store/slices/themeSlice';
+import { getDesignPalette } from './utils/theme';
+import TopBar from '#components/TopBar';
 
-function App() {
+const App = () => {
+  const darkMode = useSelector(selectDarkMode);
+
+  // Update the theme only if the darkMode changes
+  const theme = useMemo(() => createTheme(getDesignPalette(darkMode)), [darkMode]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container maxWidth="md">
+        <TopBar />
         >
           Learn React
         </a>
       </header>
     </div>
+      </Container>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
