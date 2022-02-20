@@ -15,7 +15,12 @@ const ResourceCard = ({ image, name, onClick }: IProps) => {
   return (
     <Card>
       <CardActionArea onClick={onClick}>
-        <CardMedia component="img" alt={name} height="500" image={image} />
+        <CardMedia
+          component="img"
+          alt={name}
+          sx={{ height: { xs: 300, md: 500 } }}
+          image={image}
+        />
         <CardActions>
           <Typography variant="h6">{name}</Typography>
         </CardActions>
