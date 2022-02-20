@@ -12,7 +12,7 @@ export interface IPeople {
   species: any[];
   vehicles: string[];
   starships: string[];
-  created: Date;
-  edited: Date;
+  created: string;
+  edited: string;
   url: string;
 }
