@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface IProps {
-  fill: 'black' | 'white';
+  fill: '#ffc107' | 'white';
 }
 
 const Icon = ({ fill }: IProps) => {
