@@ -1,5 +1,5 @@
 import { PaletteMode } from '@mui/material';
-import { amber, deepOrange, grey } from '@mui/material/colors';
+import { amber, grey } from '@mui/material/colors';
 
 export const getDesignPalette = (darkMode: boolean) => ({
   palette: {
@@ -15,7 +15,7 @@ export const getDesignPalette = (darkMode: boolean) => ({
       : {
           // palette values for light mode
           primary: amber,
-          divider: amber[200],
+          divider: amber[500],
           text: {
             primary: grey[900],
             secondary: grey[800]
