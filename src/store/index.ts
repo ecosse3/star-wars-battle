@@ -4,11 +4,13 @@ import { peopleApi } from './api/peopleApi';
 import { starshipsApi } from './api/starshipsApi';
 import theme from './slices/themeSlice';
 import game from './slices/gameSlice';
+import people from './slices/peopleSlice';
 
 const store = configureStore({
   reducer: {
     theme,
     game,
+    people,
     [peopleApi.reducerPath]: peopleApi.reducer,
     [starshipsApi.reducerPath]: starshipsApi.reducer
   },
