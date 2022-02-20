@@ -7,6 +7,7 @@ import { getDesignPalette } from './utils/theme';
 import TopBar from '#components/TopBar';
 import ResourceSelection from '#containers/ResourceSelection';
 import { selectResource } from '#store/slices/gameSlice';
+import FightPeople from '#containers/FightPeople';
 
 const App = () => {
   const darkMode = useSelector(selectDarkMode);
@@ -21,6 +22,7 @@ const App = () => {
       <Container maxWidth="md">
         <TopBar />
         {resource === null ? <ResourceSelection /> : null}
+        {resource === 'people' ? <FightPeople /> : null}
       </Container>
     </ThemeProvider>
   );
