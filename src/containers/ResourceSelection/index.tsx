@@ -14,6 +14,7 @@ const ResourceSelection = () => {
       display="flex"
       flexDirection="column"
       mt={10}
+      mb={10}
       justifyContent="center"
       alignItems="center"
     >
