@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useGetStarshipsQuery } from '#store/api/starshipsApi';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import Score from '#components/Score';
@@ -20,32 +20,31 @@ const FightStarships = () => {
   const leftPlayerPoints = useSelector(selectLeftPlayerScore);
   const rightPlayerPoints = useSelector(selectRightPlayerScore);
   const { data, error, isLoading } = useGetStarshipsQuery();
-  const [winner, setWinner] = useState<IStarship | 'TIE' | undefined>(undefined);
+  const [winner, setWinner] = useState<IStarship | undefined>(undefined);
   const [starships, setStarships] = useState<number[]>([]);
 
-  const generateStarshipsData = () => {
+  const generateRandomStarships = useCallback(() => {
     if (data) {
       const randomStarships = generateRandomData(data.results.length);
       setStarships(randomStarships);
     }
-  };
+  }, [data]);
 
   useEffect(() => {
-    generateStarshipsData();
+    generateRandomStarships();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
     if (data && starships.length > 0) {
-      const leftPlayer = data.results[starships[0]];
-      const rightPlayer = data.results[starships[1]];
+      const _starships = [data.results[starships[0]], data.results[starships[1]]];
 
-      const result = calculateHigherAttribute(leftPlayer.crew, rightPlayer.crew);
-      const r = [leftPlayer, rightPlayer].filter((p) => p.crew === result)[0];
-      setWinner(r);
-      // Two separate ifs because there can be a tie, and then no one will receive point
-      if (r === leftPlayer) dispatch(givePointToLeftPlayer());
-      if (r === rightPlayer) dispatch(givePointToRightPlayer());
+      const higherCrew = calculateHigherAttribute(_starships[0].crew, _starships[1].crew);
+      const _winner = _starships.filter((starship) => starship.crew === higherCrew)[0];
+      setWinner(_winner);
+      // Two separate ifs because when it will be a tie, then no one will receive point
+      if (_winner === _starships[0]) dispatch(givePointToLeftPlayer());
+      if (_winner === _starships[1]) dispatch(givePointToRightPlayer());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [starships]);
@@ -86,7 +85,7 @@ const FightStarships = () => {
     >
       <Box display="flex" alignItems="center" mt={10}>
         <Typography variant="h4">
-          {winner === 'TIE' ? 'A tie!' : `${winner?.name} wins!`}
+          {winner === undefined ? 'A tie!' : `${winner?.name} wins!`}
         </Typography>
       </Box>
       <Box
@@ -127,7 +126,7 @@ const FightStarships = () => {
         </DataCard>
       </Box>
       <Score leftPlayer={leftPlayerPoints} rightPlayer={rightPlayerPoints} />
-      <PlayAgainOrSwitch onPlayAgainCallback={generateStarshipsData} />
+      <PlayAgainOrSwitch onPlayAgainCallback={generateRandomStarships} />
     </Box>
   );
 };
