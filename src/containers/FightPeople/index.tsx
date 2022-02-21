@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useGetPeopleQuery } from '#store/api/peopleApi';
-import { Box, CardContent, CircularProgress, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import Score from '#components/Score';
-import Card from '@mui/material/Card';
 import PlayAgainOrSwitch from '#components/PlayAgainOrSwitch';
 import { IPeople } from '#interfaces/people';
 import { useAppDispatch } from '#store';
@@ -13,89 +12,23 @@ import {
   selectLeftPlayerScore,
   selectRightPlayerScore
 } from '#store/slices/peopleSlice';
-
-const PeopleDataCard = ({ winner, data }: { winner: boolean; data?: IPeople }) => (
-  <Box sx={{ minWidth: 275 }}>
-    <Card
-      variant="outlined"
-      sx={{
-        border: `1px solid ${winner ? 'green' : 'rgba(255, 255, 255, 0.12)'}`,
-        background: `${winner ? 'rgba(0, 255, 0, 0.1)' : 'transparent'}`
-      }}
-    >
-      <CardContent>
-        <Typography variant="h5" component="div">
-          {data?.name}
-        </Typography>
-        <Typography sx={{ mt: 1.5 }} variant="h6">
-          Mass: {data?.mass}
-        </Typography>
-        <Typography sx={{ mt: 1.5 }} color="text.secondary">
-          Gender: {data?.gender}
-        </Typography>
-        <Typography sx={{ mt: 1.5 }} color="text.secondary">
-          Height: {data?.height}
-        </Typography>
-        <Typography sx={{ mt: 1.5 }} color="text.secondary">
-          Eye color: {data?.eye_color}
-        </Typography>
-      </CardContent>
-    </Card>
-  </Box>
-);
-
-export const calculateWinner = (leftPlayer: IPeople, rightPlayer: IPeople) => {
-  const mass1 =
-    leftPlayer.mass?.replace(',', '') === 'unknown'
-      ? -1
-      : Number(leftPlayer?.mass?.replace(',', ''));
-  const mass2 =
-    rightPlayer.mass?.replace(',', '') === 'unknown'
-      ? -1
-      : Number(rightPlayer?.mass?.replace(',', ''));
-
-  if (mass1 > mass2) return leftPlayer;
-  if (mass1 < mass2) return rightPlayer;
-
-  return 'TIE';
-};
+import { calculateHigherAttribute, generateRandomData } from '#utils/functions';
+import DataCard from '#components/DataCard';
 
 const FightPeople = () => {
   const dispatch = useAppDispatch();
   const leftPlayerPoints = useSelector(selectLeftPlayerScore);
   const rightPlayerPoints = useSelector(selectRightPlayerScore);
-  // Get first two pages for more data
-  const {
-    data: peopleFirstPage,
-    error: peopleFirstPageError,
-    isLoading: isLoadingPeopleFirstPage
-  } = useGetPeopleQuery(1);
-  const {
-    data: peopleSecondPage,
-    error: peopleSecondPageError,
-    isLoading: isLoadingPeopleSecondPage
-  } = useGetPeopleQuery(2);
-
-  const [winner, setWinner] = useState<IPeople | 'TIE' | undefined>(undefined);
-  const [data, setData] = useState<IPeople[] | null>(null);
+  const { data, error, isLoading } = useGetPeopleQuery();
+  const [winner, setWinner] = useState<IPeople | undefined>(undefined);
   const [people, setPeople] = useState<number[]>([]);
 
-  const generateRandomPeople = () => {
+  const generateRandomPeople = useCallback(() => {
     if (data) {
-      const randomPeople = [
-        Math.floor(Math.random() * data.length - 1) + 1,
-        Math.floor(Math.random() * data.length - 1) + 1
-      ];
-
+      const randomPeople = generateRandomData(data.results.length);
       setPeople(randomPeople);
     }
-  };
-
-  useEffect(() => {
-    if (peopleFirstPage && peopleSecondPage) {
-      setData([...peopleFirstPage.results, ...peopleSecondPage.results]);
-    }
-  }, [peopleFirstPage, peopleSecondPage]);
+  }, [data]);
 
   useEffect(() => {
     generateRandomPeople();
@@ -104,18 +37,19 @@ const FightPeople = () => {
 
   useEffect(() => {
     if (data && people.length > 0) {
-      const leftPlayer = data[people[0]];
-      const rightPlayer = data[people[1]];
+      const players = [data.results[people[0]], data.results[people[1]]];
 
-      const result = calculateWinner(leftPlayer, rightPlayer);
-      setWinner(result);
-      // Two separate ifs because there can be a tie, and then no one will receive point
-      if (result === leftPlayer) dispatch(givePointToLeftPlayer());
-      if (result === rightPlayer) dispatch(givePointToRightPlayer());
+      const higherMass = calculateHigherAttribute(players[0].mass, players[1].mass);
+      const _winner = players.filter((player) => player.mass === higherMass)[0];
+      setWinner(_winner);
+      // Two separate ifs because when it will be a tie, then no one will receive point
+      if (_winner === players[0]) dispatch(givePointToLeftPlayer());
+      if (_winner === players[1]) dispatch(givePointToRightPlayer());
     }
-  }, [data, dispatch, people]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [people]);
 
-  if (isLoadingPeopleFirstPage || isLoadingPeopleSecondPage)
+  if (isLoading)
     return (
       <Box
         display="flex"
@@ -128,7 +62,7 @@ const FightPeople = () => {
       </Box>
     );
 
-  if (peopleFirstPageError || peopleSecondPageError)
+  if (error)
     return (
       <Box
         display="flex"
@@ -138,7 +72,7 @@ const FightPeople = () => {
         alignItems="center"
       >
         Error fetching data!
-        {peopleFirstPageError || peopleSecondPageError}
+        {error}
       </Box>
     );
 
@@ -151,7 +85,7 @@ const FightPeople = () => {
     >
       <Box display="flex" alignItems="center" mt={10}>
         <Typography variant="h4">
-          {winner === 'TIE' ? 'A tie!' : `${winner?.name} wins!`}
+          {winner === undefined ? 'A tie!' : `${winner?.name} wins!`}
         </Typography>
       </Box>
       <Box
@@ -161,9 +95,41 @@ const FightPeople = () => {
         gap={5}
         mt={{ xs: 5, md: 10 }}
       >
-        <PeopleDataCard winner={data?.[people[0]] === winner} data={data?.[people[0]]} />
+        <DataCard isWinner={data?.results?.[people[0]] === winner}>
+          <Typography variant="h5" component="div">
+            {data?.results?.[people[0]]?.name}
+          </Typography>
+          <Typography sx={{ mt: 1.5 }} variant="h6">
+            Mass: {data?.results?.[people[0]]?.mass}
+          </Typography>
+          <Typography sx={{ mt: 1.5 }} color="text.secondary">
+            Gender: {data?.results?.[people[0]]?.gender}
+          </Typography>
+          <Typography sx={{ mt: 1.5 }} color="text.secondary">
+            Height: {data?.results?.[people[0]]?.height}
+          </Typography>
+          <Typography sx={{ mt: 1.5 }} color="text.secondary">
+            Eye color: {data?.results?.[people[0]]?.eye_color}
+          </Typography>
+        </DataCard>
         vs.
-        <PeopleDataCard winner={data?.[people[1]] === winner} data={data?.[people[1]]} />
+        <DataCard isWinner={data?.results?.[people[1]] === winner}>
+          <Typography variant="h5" component="div">
+            {data?.results?.[people[1]]?.name}
+          </Typography>
+          <Typography sx={{ mt: 1.5 }} variant="h6">
+            Mass: {data?.results?.[people[1]]?.mass}
+          </Typography>
+          <Typography sx={{ mt: 1.5 }} color="text.secondary">
+            Gender: {data?.results?.[people[1]]?.gender}
+          </Typography>
+          <Typography sx={{ mt: 1.5 }} color="text.secondary">
+            Height: {data?.results?.[people[1]]?.height}
+          </Typography>
+          <Typography sx={{ mt: 1.5 }} color="text.secondary">
+            Eye color: {data?.results?.[people[1]]?.eye_color}
+          </Typography>
+        </DataCard>
       </Box>
       <Score leftPlayer={leftPlayerPoints} rightPlayer={rightPlayerPoints} />
       <PlayAgainOrSwitch onPlayAgainCallback={generateRandomPeople} />
