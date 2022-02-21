@@ -5,7 +5,7 @@ export const generateRandomData = (length: number) => [
 ];
 
 // Normalizes comma-separated numbers and takes maximum value from range
-const normalizeToNumber = (attribute: string) => {
+export const normalizeToNumber = (attribute: string) => {
   if (attribute.indexOf('-') > -1) {
     const values = attribute
       .split('-')

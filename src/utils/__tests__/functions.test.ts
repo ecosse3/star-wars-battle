@@ -1,4 +1,9 @@
-import { calculateHigherAttribute } from '#utils/functions';
+import {
+  calculateHigherAttribute,
+  generateRandomData,
+  normalizeToNumber
+} from '#utils/functions';
+
 import {
   mockPeople1,
   mockPeople2,
@@ -32,4 +37,34 @@ test('when two player mass are unknown expect a tie', () => {
   // MockPeople2 Mass: 'unknown'
   const mass = calculateHigherAttribute(mockPeople2.mass, mockPeople2.mass);
   expect(mass).toBe(-1);
+});
+
+test('normalize string value to number', () => {
+  const number = normalizeToNumber('22');
+  expect(number).toBe(22);
+});
+
+test('normalize string value with comma to number', () => {
+  const number = normalizeToNumber('1,000');
+  expect(number).toBe(1000);
+});
+
+test('normalize range value to maximum number', () => {
+  const number = normalizeToNumber('55-325');
+  expect(number).toBe(325);
+});
+
+test('normalize range value with comma to maximum number', () => {
+  const number = normalizeToNumber('55,25-325,015');
+  expect(number).toBe(325015);
+});
+
+test('normalize range value with higher value on left side to maximum number', () => {
+  const number = normalizeToNumber('100-25');
+  expect(number).toBe(100);
+});
+
+test('return an array with two values', () => {
+  const array = generateRandomData(9);
+  expect(array).toHaveLength(2);
 });
