@@ -11,14 +11,14 @@ test('renders dark mode component', () => {
 });
 
 test('toggles switch', () => {
-  const { getByRole } = renderComponent(
-    <DarkModeSwitch checked toggleCallback={jest.fn()} />
-  );
+  renderComponent(<DarkModeSwitch checked toggleCallback={jest.fn()} />);
 
-  getByRole('checkbox').click();
-  fireEvent.change(getByRole('checkbox'), { target: { checked: '' } });
-  expect(getByRole('checkbox')).toHaveProperty('checked', false);
+  const checkbox = screen.getByRole('checkbox');
 
-  fireEvent.change(getByRole('checkbox'), { target: { checked: 'checked' } });
-  expect(getByRole('checkbox')).toHaveProperty('checked', true);
+  checkbox.click();
+  fireEvent.change(checkbox, { target: { checked: '' } });
+  expect(checkbox).toHaveProperty('checked', false);
+
+  fireEvent.change(checkbox, { target: { checked: 'checked' } });
+  expect(checkbox).toHaveProperty('checked', true);
 });
