@@ -14,6 +14,7 @@
     "@types/node": "^16.7.13",
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
+    "puppeteer": "^13.3.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
@@ -26,7 +27,8 @@
     "tsc": "./node_modules/.bin/tsc",
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test",
+    "test": "craco test --testPathIgnorePatterns=.*e2e.test.ts",
+    "test:e2e": "craco test --testPathPattern=.*e2e.test.ts$",
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
