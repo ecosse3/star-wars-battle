@@ -5,6 +5,7 @@ import { starshipsApi } from './api/starshipsApi';
 import theme from './slices/themeSlice';
 import game from './slices/gameSlice';
 import people from './slices/peopleSlice';
+import starships from './slices/starshipsSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     game,
     people,
     [peopleApi.reducerPath]: peopleApi.reducer,
+    starships,
     [starshipsApi.reducerPath]: starshipsApi.reducer
   },
   middleware: (getDefaultMiddleware) =>

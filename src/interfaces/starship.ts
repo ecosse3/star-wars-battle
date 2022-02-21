@@ -1,4 +1,4 @@
-export interface IStarships {
+export interface IStarship {
   name: string;
   model: string;
   manufacturer: string;
@@ -14,7 +14,7 @@ export interface IStarships {
   starship_class: string;
   pilots: any[];
   films: string[];
-  created: Date;
-  edited: Date;
+  created: string;
+  edited: string;
   url: string;
 }
