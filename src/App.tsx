@@ -8,6 +8,7 @@ import TopBar from '#components/TopBar';
 import ResourceSelection from '#containers/ResourceSelection';
 import { selectResource } from '#store/slices/gameSlice';
 import FightPeople from '#containers/FightPeople';
+import FightStarships from '#containers/FightStarships';
 
 const App = () => {
   const darkMode = useSelector(selectDarkMode);
@@ -23,6 +24,7 @@ const App = () => {
         <TopBar />
         {resource === null ? <ResourceSelection /> : null}
         {resource === 'people' ? <FightPeople /> : null}
+        {resource === 'starships' ? <FightStarships /> : null}
       </Container>
     </ThemeProvider>
   );
