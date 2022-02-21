@@ -9,11 +9,8 @@ export const peopleApi = createApi({
   endpoints: (builder) => ({
     getPeople: builder.query<IResponse<IPeople[]>, number | void>({
       query: (page = 1) => `/people?page=${page}`
-    }),
-    getPeopleById: builder.query<IResponse<IPeople>, number>({
-      query: (id) => `/people/${id}`
     })
   })
 });
 
-export const { useGetPeopleQuery, useGetPeopleByIdQuery } = peopleApi;
+export const { useGetPeopleQuery } = peopleApi;
